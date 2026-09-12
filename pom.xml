@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>Sprint_7</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- БЛОК СВОЙСТВ (Properties): Единая точка управления настройками и версиями проекта. -->
+    <properties>
+        <!-- Указываем версию Java для компиляции исходного кода (source) и запуска (target) -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Устанавливаем кодировку UTF-8, чтобы кириллица в логах и отчетах отображалась корректно -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Версии библиотек вынесены сюда для удобства обновления и избежания конфликтов -->
+        <junit.version>4.13.2</junit.version>
+
+        <!-- ВАЖНО: Единая версия для ВСЕХ Java-модулей Allure (allure-junit4, allure-rest-assured).
+             Они должны обновляться синхронно, чтобы внутреннее ядро (allure-java-commons) не конфликтовало. -->
+        <allure.version>2.29.0</allure.version>
+
+        <!-- Версия агента AspectJ Weaver. Он нужен для "магии" Allure: перехвата аннотаций @Step во время работы программы. -->
+        <aspectj.version>1.9.25.1</aspectj.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
+    </properties>
+
+    <!-- БЛОК ЗАВИСИМОСТЕЙ: Сторонние библиотеки, которые скачивает Maven для написания кода тестов. -->
+    <dependencies>
+
+        <!-- 1. RestAssured: Библиотека для создания, отправки HTTP-запросов и проверок (ассертов) ответов. -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope> <!-- scope test означает, что библиотека нужна только для папки src/test/java -->
+        </dependency>
+
+        <!-- 2. JUnit 4: Основной тестовый движок. Предоставляет аннотации @Test, @Before и запускает проверки. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 3. Адаптер Allure для JUnit 4.
+             Его задача: переводить события JUnit (тест начался, упал, прошел успешно) в формат, понятный Allure. -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit4</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 4. Интеграция Allure с RestAssured.
+             Ее задача: перехватывать HTTP-трафик (URL, заголовки, тело запроса/ответа) и прикреплять его в виде
+             вложений (attachments) к текущему шагу в отчете Allure. -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.46</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- maven-surefire-plugin
+                 Это сам "запускатор" тестов в Maven. По умолчанию вызывается командой mvn test. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+                    </argLine>
+
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>io.qameta.allure.junit4.AllureJunit4</value>
+                        </property>
+                    </properties>
+
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
