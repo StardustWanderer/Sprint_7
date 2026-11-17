@@ -9,9 +9,9 @@ import org.example.model.CourierModel;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.example.data.CourierData.COURIER_CREATE_PATH;
-import static org.example.data.CourierData.COURIER_LOGIN_PATH;
-import static org.example.data.CourierData.COURIER_DELETE_PATH;
+import static org.example.config.ApiEndpoints.COURIER_CREATE_PATH;
+import static org.example.config.ApiEndpoints.COURIER_LOGIN_PATH;
+import static org.example.config.ApiEndpoints.COURIER_DELETE_PATH;
 
 public class CourierSteps {
     @Step("Создание курьера")
@@ -53,7 +53,7 @@ public class CourierSteps {
                 .extract().response();
     }
 
-    @Step("Логин курьера курьера(нестандартный JSON через Map)")
+    @Step("Логин курьера (нестандартный JSON через Map)")
     public static Response loginCourier(Map<String, String> courierData){
         return given()
                 .filter(new AllureRestAssured())

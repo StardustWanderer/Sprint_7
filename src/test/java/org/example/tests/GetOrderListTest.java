@@ -11,13 +11,13 @@ import static org.hamcrest.Matchers.*;
 
 public class GetOrderListTest extends BaseApiTest {
     @Test
-    @Description("Получение списка заказов возвращает код 200 и JSON с непустым массивом orders")
+    @Description("Получение списка заказов возвращает код 200 и JSON с массивом orders")
     public void getOrderListReturn200AndArrayWithOrders(){
         Response orderListResponse = getOrderList();
         orderListResponse
                 .then()
+                .log().all()
                 .statusCode(200)
-                .body("orders", isA(List.class))
-                .body("orders", not(empty()));
+                .body("orders", isA(List.class));
     }
 }

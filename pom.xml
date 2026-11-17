@@ -66,6 +66,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- AspectJ Weaver: инструментирование классов для работы аспектов Allure -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>

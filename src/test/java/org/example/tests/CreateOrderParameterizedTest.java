@@ -42,14 +42,14 @@ public class CreateOrderParameterizedTest extends BaseApiTest {
     @Description("Создание заказа с разными цветами или отсутсвием выбранного цвета возвращает код 201 и трек номер типа integer")
     public void createOrderWithDifferentColorsReturns201AndTrackNumber() {
         OrderModel order = new OrderModel(
-                CLIENT_FIRST_NAME,
-                CLIENT_LAST_NAME,
-                CLIENT_ADDRESS,
-                METRO_STATION,
-                CLIENT_PHONE,
-                RENT_TIME,
-                DELIVERY_DATE,
-                COMMENT,
+                generateClientFirstName(),
+                generateClientLastName(),
+                generateClientAddress(),
+                generateMetroStationId(),
+                generateClientPhoneNumber(),
+                generateRentTimeDuration(),
+                generateDeliveryDate(),
+                generateClientComment(),
                 color);
 
         Response response = createOrder(order);
