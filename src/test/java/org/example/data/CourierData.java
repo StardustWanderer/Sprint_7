@@ -2,14 +2,26 @@ package org.example.data;
 
 import com.github.javafaker.Faker;
 
+import java.util.Locale;
+
 public class CourierData {
-    private static final Faker user = new Faker();
+    private static final Faker userRus = new Faker(new Locale("ru"));
+    private static final Faker userEng = new Faker(Locale.ENGLISH);
 
-    public static final String LOGIN = user.name().lastName() + user.regexify("[0-9]{6}");
-    public static final String PASSWORD = user.regexify("[0-9]{6}");
-    public static final String FIRST_NAME = "saske";
+    public static String generateCourierLogin(){
+        String lastName = userEng.name()
+                .lastName()
+                .toLowerCase()
+                .replaceAll("[^a-z]", "");
 
-    public static final String COURIER_CREATE_PATH = "/api/v1/courier";
-    public static final String COURIER_LOGIN_PATH = "/api/v1/courier/login";
-    public static final String COURIER_DELETE_PATH = "/api/v1/courier/{id}";
+        return "test_" + lastName + userRus.regexify("[0-9]{7}");
+    }
+
+    public static String generateCourierPassword(){
+        return userEng.internet().password(8, 16);
+    }
+
+    public static String generateCourierFirstName() {
+        return userRus.name().firstName();
+    }
 }

@@ -6,19 +6,39 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 public class OrderData {
-    private static final Faker faker = new Faker(new Locale("ru"));
+    private static final Faker userRus = new Faker(new Locale("ru"));
+    private static final Faker userEng = new Faker(Locale.ENGLISH);
 
-    public static final String CLIENT_FIRST_NAME = faker.name().firstName();
-    public static final String CLIENT_LAST_NAME = faker.name().lastName();
-    public static final String CLIENT_ADDRESS = faker.address().streetAddress();
-    public static final String METRO_STATION = String.valueOf(faker.number().numberBetween(1, 100));
-    public static final String CLIENT_PHONE = "+79" + faker.number().digits(9);
-    public static final int RENT_TIME = faker.number().numberBetween(1, 8);
-    // Завтрашняя дата в стандартном ISO-формате YYYY-MM-DD
-    public static final String DELIVERY_DATE = LocalDate.now().plusDays(1).toString();
-    public static final String COMMENT = "Комментарий к заказу";
+    public static String generateClientFirstName() {
+        return userRus.name().firstName();
+    }
 
-    public static final String CREATE_ORDER_URL = "/api/v1/orders";
-    public static final String CANCEL_ORDER_URL = "/api/v1/orders/cancel";
-    public static final String GET_ORDER_URL = "/api/v1/orders";
+    public static String generateClientLastName() {
+        return userRus.name().lastName();
+    }
+
+    public static String generateClientAddress() {
+        return userRus.address().streetAddress();
+    }
+
+    public static String generateMetroStationId() {
+        return String.valueOf(userEng.number().numberBetween(1, 200));
+    }
+
+    public static String generateClientPhoneNumber() {
+        return userRus.numerify("+79#########");
+    }
+
+    public static int generateRentTimeDuration() {
+        return userRus.number().numberBetween(1, 8);
+    }
+
+    // Дата доставки от одного до семи дней от текущей даты
+    public static String generateDeliveryDate() {
+        return LocalDate.now().plusDays(userEng.number().numberBetween(1, 8)).toString();
+    }
+
+    public static String generateClientComment(){
+        return userRus.witcher().quote();
+    }
 }

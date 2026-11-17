@@ -5,16 +5,18 @@ import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RestAssuredConfig;
 import org.junit.Before;
 
-public class BaseApiTest {
+import static org.example.config.Urls.BASE_URL;
+
+public abstract class BaseApiTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
+        RestAssured.baseURI = BASE_URL;
 
-        // Настройка таймаута: если сервер не отвечает за 30000 мс (30 сек), запрос обрывается
+        // Настройка таймаута: если сервер не отвечает за 40000 мс (30 сек), запрос обрывается
         RestAssured.config = RestAssuredConfig.config()
                 .httpClient(HttpClientConfig.httpClientConfig()
-                        .setParam("http.connection.timeout", 30000)
-                        .setParam("http.socket.timeout", 30000));
+                        .setParam("http.connection.timeout", 40000)
+                        .setParam("http.socket.timeout", 40000));
     }
 }

@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 public class CreateCourierTest extends BaseApiTest {
 
+    private CourierModel courier;
     private boolean courierCreated = false;
     String courierId = null;
 
@@ -24,7 +25,7 @@ public class CreateCourierTest extends BaseApiTest {
     @Description("Проверка успешного создания курьера с корректными данными: ручка возвращает статус-код 201 и ok: true.")
     public void createCourierWithValidDataReturns201() {
 
-        CourierModel courier = new CourierModel(LOGIN, PASSWORD, FIRST_NAME);
+        courier = new CourierModel(generateCourierLogin(), generateCourierPassword(), generateCourierFirstName());
 
         // Отправляем запрос на создание
         Response createResponse = createCourier(courier);
@@ -44,7 +45,7 @@ public class CreateCourierTest extends BaseApiTest {
     @Test
     @Description("Создание курьера с уже существующим логином: ручка возвращает статус-код 409 и message: Этот логин уже используется")
     public void createCourierWithOccupiedLoginReturns409() {
-        CourierModel courier = new CourierModel(LOGIN, PASSWORD, FIRST_NAME);
+        courier = new CourierModel(generateCourierLogin(), generateCourierPassword(), generateCourierFirstName());
 
         // НЮАНС: Тест состоит из двух этапов.
         // Этап 1: Сначала принудительно создаем первого курьера, чтобы занять логин в БД
@@ -68,7 +69,7 @@ public class CreateCourierTest extends BaseApiTest {
     @Description("Создание курьера без firstName: ручка возвращает статус-код 201 и ok: true")
     public void createCourierWithoutFirstNameReturns201() {
 
-        CourierModel courier = new CourierModel(LOGIN, PASSWORD);
+        courier = new CourierModel(generateCourierLogin(), generateCourierPassword());
 
         Response createResponse = createCourier(courier);
         courierCreated = createResponse.statusCode() == 201;
@@ -87,7 +88,7 @@ public class CreateCourierTest extends BaseApiTest {
         // Это позволяет легко передать JSON без ключа "login" (а не с логином null),
         // не плодя лишние конструкторы в классе CourierModel.
         Map<String, String> courier = new HashMap<>();
-        courier.put("password", PASSWORD);
+        courier.put("password", generateCourierPassword());
 
         createCourier(courier)
                 .then()
@@ -101,7 +102,7 @@ public class CreateCourierTest extends BaseApiTest {
     public void createCourierWithoutPasswordReturns400() {
         // Аналогично: отправляем JSON, в котором есть только ключ "login"
         Map<String, String> courier = new HashMap<>();
-        courier.put("login", LOGIN);
+        courier.put("login", generateCourierLogin());
 
         createCourier(courier)
                 .then()
@@ -117,7 +118,7 @@ public class CreateCourierTest extends BaseApiTest {
             return;
         }
 
-        CourierModel courier = new CourierModel(LOGIN, PASSWORD);
+        courier = new CourierModel(courier.getLogin(), courier.getPassword());
         Response loginResponse = loginCourier(courier);
 
         if (loginResponse.statusCode() == 200) {

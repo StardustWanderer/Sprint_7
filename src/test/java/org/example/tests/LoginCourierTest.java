@@ -1,7 +1,6 @@
 package org.example.tests;
 
 import io.qameta.allure.Description;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.example.model.CourierModel;
 import org.junit.After;
@@ -11,21 +10,20 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.example.data.CourierData.LOGIN;
-import static org.example.data.CourierData.PASSWORD;
+import static org.example.data.CourierData.*;
 import static org.example.steps.CourierSteps.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isA;
 
 public class LoginCourierTest extends BaseApiTest {
 
-    protected CourierModel courier;
-    protected String courierId;
-    protected boolean isCourierCreated = false;
+    private CourierModel courier;
+    private String courierId;
+    private boolean isCourierCreated = false;
 
     @Before
     public void createCourierBeforeTest() {
-        courier = new CourierModel(LOGIN, PASSWORD);
+        courier = new CourierModel(generateCourierLogin(), generateCourierPassword());
         Response createResponse = createCourier(courier);
 
          if(createResponse.statusCode() == 201){
@@ -65,7 +63,7 @@ public class LoginCourierTest extends BaseApiTest {
     @Description("Попытка залогиниться без поля password возвращает status 400 и message: Недостаточно данных для входа")
     public void loginCourierWithoutPasswordReturns400() {
         Map<String, String> courierWithoutPassword = new HashMap<>();
-        courierWithoutPassword.put("login", LOGIN);
+        courierWithoutPassword.put("login", courier.getLogin());
 
         loginCourier(courierWithoutPassword).then()
                 .log().all()
@@ -77,7 +75,7 @@ public class LoginCourierTest extends BaseApiTest {
     @Description("Попытка залогиниться без поля login возвращает status 400 и message: Недостаточно данных для входа")
     public void loginCourierWithoutLoginReturns400() {
         Map<String, String> courierWithoutLogin = new HashMap<>();
-        courierWithoutLogin.put("password", PASSWORD);
+        courierWithoutLogin.put("password", courier.getPassword());
 
         loginCourier(courierWithoutLogin).then()
                 .log().all()
@@ -88,7 +86,7 @@ public class LoginCourierTest extends BaseApiTest {
     @Test
     @Description("Попытка залогиниться с неправильным паролем возвращает status 404 и message: Учетная запись не найдена")
     public void loginCourierWithInvalidPasswordReturns404(){
-        CourierModel courierInvalidPassword = new CourierModel(LOGIN, "0invldpsswrd0");
+        CourierModel courierInvalidPassword = new CourierModel(courier.getLogin(), courier.getPassword() + "_wr");
         loginCourier(courierInvalidPassword).then()
                 .log().all()
                 .statusCode(404)
@@ -98,7 +96,7 @@ public class LoginCourierTest extends BaseApiTest {
     @Test
     @Description("Попытка залогиниться с неправильным логином возвращает status 404 и message: Учетная запись не найдена")
     public void loginCourierWithInvalidLoginReturns404(){
-        CourierModel courierInvalidLogin = new CourierModel("1111invldlogin0000", PASSWORD);
+        CourierModel courierInvalidLogin = new CourierModel(courier.getLogin() + "_wr", courier.getPassword());
 
         loginCourier(courierInvalidLogin).then()
                 .log().all()

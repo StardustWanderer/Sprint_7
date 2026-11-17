@@ -4,12 +4,12 @@ import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.example.config.ApiEndpoints;
 import org.example.model.OrderModel;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.example.data.OrderData.*;
 
 public class OrderSteps {
     @Step("Создание заказа")
@@ -20,20 +20,20 @@ public class OrderSteps {
                 .contentType(ContentType.JSON)
                 .body(order)
                 .when()
-                .post(CREATE_ORDER_URL)
+                .post(ApiEndpoints.CREATE_ORDER_URL)
                 .then()
                 .extract().response();
     }
 
     @Step("Отмена заказа")
-    public static Response cancelOrder(Map<String,Integer> cancelOrderModel){
+    public static Response cancelOrder(Map<String, Integer> cancelOrderModel){
         return given()
                 .filter(new AllureRestAssured())
                 .log().all()
                 .contentType(ContentType.JSON)
                 .body(cancelOrderModel)
                 .when()
-                .put(CANCEL_ORDER_URL)
+                .put(ApiEndpoints.CANCEL_ORDER_URL)
                 .then()
                 .extract().response();
     }
@@ -43,7 +43,9 @@ public class OrderSteps {
         return given()
                 .filter(new AllureRestAssured())
                 .log().all()
-                .get(GET_ORDER_URL)
+                .queryParam("limit", 5)
+                .queryParam("page", 0)
+                .get(ApiEndpoints.GET_ORDER_URL)
                 .then()
                 .extract().response();
     }
